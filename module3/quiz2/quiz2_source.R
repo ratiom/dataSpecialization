@@ -16,13 +16,30 @@ gtoken <- config(token = github_token)
 req <- GET("https://api.github.com/users/jtleek/repos", gtoken)
 stop_for_status(req)
 json1 <- content(req)
-
+library(rjson)
 json2 = jsonlite::fromJSON(toJSON(json1))
-#The above line gives an error in RStudio 0.97.551 - not sure why
+json3 = json2[grep("datasharing", json2$name), ]
 
-#----------------Eventually just got answer from str(json1)
+#Answer 2013-11-07T13:25:07Z
+#----------------Eventually just got answer from 
 
 # OR:
 req <- with_config(gtoken, GET("https://api.github.com/rate_limit"))
 stop_for_status(req)
 content(req)
+
+#Q2
+library(sqldf,  drv='SQLite')
+acs<-read.csv("./data/getdata_data_ss06pid.csv")
+df21 <- sqldf("select pwgtp1 from acs where AGEP < 50",  drv='SQLite')
+
+
+#Q3
+df22 <- sqldf("select distinct AGEP from acs", drv='SQLite')
+
+fileurl <- url("http://biostat.jhsph.edu/~jleek/contact.html")
+htmlcode <- readLines(fileurl)
+nchar(htmlcode[10])
+#45 31 7 25
+
+#Q5 - 32426.7
